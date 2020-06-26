@@ -1,15 +1,16 @@
-from slackclient import SlackClient
+from slack import RTMClient
 import os
 import time
+import boto3
 
 token = os.environ.get('SLACKBOT_MYSHIP_TOKEN')
-slack_client = SlackClient(token)
+client = RTMClient(token=slack_token)
 
 link = '<https://myShipPicture>'
 
-if slack_client.rtm_connect():
+if client.rtm_connect():
     while True:
-        events = slack_client.rtm_read()
+        events = client.rtm_read()
         for event in events:
             if (
                 'channel' in event and
@@ -19,21 +20,21 @@ if slack_client.rtm_connect():
                 channel = event['channel']
                 text = event['text']
                 if 'ship' in text.lower() and link not in text:
-                    slack_client.api_call(
+                    client.api_call(
                         'chat.postMessage',
                         channel=channel,
                         text=link,
                         as_user='true:'
                     )
                 elif 'cheap' in text.lower() and link not in text:
-                    slack_client.api_call(
+                    client.api_call(
                         'chat.postMessage',
                         channel=channel,
                         text=link,
                         as_user='true:'
                     )
                 elif 'sheep' in text.lower() and link not in text:
-                    slack_client.api_call(
+                    client.api_call(
                         'chat.postMessage',
                         channel=channel,
                         text=link,
